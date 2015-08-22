@@ -1,0 +1,286 @@
+a.menu-icons,
+body {
+    color: #4a4a4a;
+}
+
+footer {
+    background: #d3d3d3;
+    height: 150px;
+}
+
+/*
+Search
+*/
+.search {
+    margin: 30px 0 20px;
+}
+
+/*
+Main Nav
+*/
+nav.main {
+    position: fixed;
+    right: 20px;
+    top: 20px;
+}
+
+.logo {
+    width: 230px;
+    margin: 20px 0 0 20px;
+}
+
+nav.main > ul {
+    list-style: none;
+    padding: 0;
+}
+
+nav.main > ul > li {
+    margin: 12px 10px 12px 14px;
+    cursor: pointer;
+}
+
+nav.main > ul > li.dropdown {
+    margin: 0;
+}
+
+.menu-icons {
+    font-size: 48px;
+    transition: .2s;
+}
+
+.menu-icons:hover {
+    color: #5bc0de;
+}
+
+.user-face {
+    width: 72px;
+    height: 72px;
+    background: url(../img/avatars/avatar_1.png) center no-repeat, #F99FF8;
+    background-size: cover;
+    border-radius: 36px;
+    padding-top: 14px;
+    padding-left: 15px;
+    font-size: 2em;
+    font-weight: bold;
+    color: #fff;
+    transition: .2s;
+}
+
+.user-face span{
+    color: rgba(255, 255, 255, 0);
+    position: relative;
+    top: 50px;
+    transition: .3s;
+}
+
+.user-face:hover span{
+    top: 0;
+    color: #fff;
+}
+
+/*
+Login & signup
+*/
+.login-panel {
+    position: static;
+    width: 350px;
+    margin: 100px auto;
+}
+
+
+/*
+Browsing Views
+*/
+
+.profile-picture-grid {
+    max-width: 768px;
+    margin: 0 auto;
+}
+
+.profile-picture-row {
+    display: flex;
+}
+
+.profile-picture-item {
+    width: 256px;
+    height: 256px;
+    background: #ddd;
+    overflow: hidden;
+}
+
+.profile-picture-overlay {
+    background: rgba(38, 38, 38, 0.7);
+    height: 60px;
+    position: relative;
+    top: 224px;
+    transition: .3s;
+    padding: 10px 13px;
+}
+
+.profile-picture-item:hover .profile-picture-overlay {
+    top: 164px;
+}
+
+.profile-picture-overlay a {
+    color: #fff;
+    font-size: 1.5em;
+}
+
+a.favorites-toggle {
+    color: rgba(74, 74, 74, 0);
+    font-size: 2em;
+    position: relative;
+    top: 20px;
+    right: -210px;
+    transition: .2s;
+    text-decoration: none;
+}
+
+.menu-icons[data-favorite=true],
+.favorites-toggle[data-favorite=true],
+.profile-picture-item:hover .favorites-toggle[data-favorite=true] {
+    color: rgb(232, 124, 255);
+}
+
+.profile-picture-item:hover .favorites-toggle {
+    color: rgb(74, 74, 74);
+}
+
+/*
+Profile
+*/
+
+.profile-picture {
+    border-radius: 200px;
+    overflow: hidden;
+    border: 15px solid #fff;
+    width: 226px;
+    height: 226px;
+}
+
+.profile-picture img {
+    max-width: 100%;
+}
+
+.profile-overview {
+    margin-top: 50px;
+    background: #d3d3d3;
+    padding: 20px;
+}
+
+.profile-overview ul {
+    list-style: none;
+    padding: 0;
+    font-size: 1.3em;
+}
+
+.profile-bio {
+    background: #fff;
+    padding: 5px 25px 25px;
+    margin-top: 20px;
+    font-size: 1.3em;
+}
+
+.rating {
+    font-size: 4em;
+    font-weight: bold;
+    margin-top: -21px;
+}
+
+.rating > .decimal {
+    font-size: .5em;
+    font-weight: normal;
+}
+
+.rating-star {
+    font-size: 2.9em;
+    color: #949494;
+}
+
+.rating-stars {
+    unicode-bidi: bidi-override;
+    direction: rtl;
+    max-width: 203px;
+}
+
+.rating-star:hover,
+#star5:hover ~ #star4,
+#star5:hover ~ #star3,
+#star5:hover ~ #star2,
+#star5:hover ~ #star1,
+#star4:hover ~ #star3,
+#star4:hover ~ #star2,
+#star4:hover ~ #star1,
+#star3:hover ~ #star2,
+#star3:hover ~ #star1,
+#star2:hover ~ #star1 {
+    color: #4a4a4a;
+}
+
+.profile-bio:after {
+    position: absolute;
+    top: -45px;
+    left: 65px;
+    width: 0;
+    content: "";
+    border-color: #fff transparent;
+    border-style: solid;
+    border-width: 0 15px 15px;
+    margin: 50px 50px;
+}
+
+.interests {
+    font-size: 1.2em;
+}
+
+/*
+Comments
+*/
+.comment-col-left,
+.comment-col-right,
+.comment-col-middle {
+    padding: 5px;
+}
+
+.comment-avatar,
+.comment-avatar-user {
+    height: 100px;
+}
+
+.comment-avatar,
+.comment-avatar-user{
+    min-height: 100px;
+    border-radius: 100px;
+    width: 100px;
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+.comment-avatar {
+    margin: 0 0 0 auto;
+}
+
+.comment-avatar-user {
+    margin: 0 auto 0 0;
+}
+
+.comment-user-reply {
+    margin-top: 25px;
+}
+
+.comment-body {
+    padding: 5px 10px 10px;
+    background: #d3d3d3;
+    font-size: 1.3em;
+    height: 71px;
+}
+
+.comment-header {
+    padding: 5px 10px;
+    background: #fff;
+}
+
+.comment-header > h4 {
+    margin: 0;
+    color: #4a4a4a;
+}
