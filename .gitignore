@@ -3,6 +3,9 @@ bootstrap*
 jquery*
 fonts/*
 
+#misc
+*htaccess
+
 
 
 # Created by .ignore support plugin (hsz.mobi)

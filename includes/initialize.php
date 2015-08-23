@@ -8,7 +8,7 @@ require CLASSES . 'Profile.php';
 require CLASSES . 'Interest.php';
 require CLASSES . 'PeopleGrid.php';
 require CLASSES . 'Alert.php';
-// session_start();
+require CLASSES . 'User.php';
 $exceptionHandler = new toolbox\ExceptionHandler($inDevelopment);
 $requiredAvatars = [];
 
@@ -32,4 +32,19 @@ catch (PDOException $e)
     exit;
 }
 
-$_SESSION['userId'] = 3;
+session_start();
+if (empty($_SESSION['userId'])) {
+    if ($_SERVER['REQUEST_METHOD'] == 'POST'
+        && isset($_GET['view'])
+        && $_GET['view'] == 'login')
+    {
+        $user = \love9\User::withLogin();
+    }
+
+    // Default, not logged in user
+    else
+        $user = new \love9\User();
+}
+else {
+    $user = \love9\User::withId($_SESSION['userId']);
+}

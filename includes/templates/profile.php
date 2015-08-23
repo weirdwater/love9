@@ -50,9 +50,9 @@
                                 <h3>Interests</h3>
                                 <div class="interests">
                                     <?php foreach ($this->person->getInterests() as $interest): ?>
-                                        <?php if ($user->dislikesInterest($interest->getId())): ?>
+                                        <?php if ($user->isLoggedIn() && $user->getPerson()->dislikesInterest($interest->getId())): ?>
                                             <span class="label label-success"><?= $interest->getName() ?></span>
-                                        <?php elseif ($user->likesInterest($interest->getId())): ?>
+                                        <?php elseif ($user->isLoggedIn() && $user->getPerson()->likesInterest($interest->getId())): ?>
                                             <span class="label label-success"><?= $interest->getName() ?></span>
                                         <?php else: ?>
                                             <span class="label label-default"><?= $interest->getName() ?></span>
@@ -72,25 +72,27 @@
                         $comment->showComment();
                     }
                     ?>
-                    <div class="comment-row row">
-                        <div class="comment-col-left col-md-2">
+                    <?php if ($user->isLoggedIn()): ?>
+                        <div class="comment-row row">
+                            <div class="comment-col-left col-md-2">
+                            </div>
+                            <div class="comment-col-middle col-md-8">
+                                <form action="" method="post">
+                                    <div class="form-group">
+                                        <label for="comment">Reply:</label>
+                                        <textarea class="form-control" rows="5" id="comment"></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="button" class=" btn btn-link" value="Clear"/>
+                                        <input type="submit" class=" btn btn-primary"/>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="comment-col-left col-md-2">
+                                <div class="comment-avatar-user comment-user-reply avatar" data-userid="<?= $user->getPerson()->getId() ?>"> </div>
+                            </div>
                         </div>
-                        <div class="comment-col-middle col-md-8">
-                            <form action="" method="post">
-                                <div class="form-group">
-                                    <label for="comment">Reply:</label>
-                                    <textarea class="form-control" rows="5" id="comment"></textarea>
-                                </div>
-                                <div class="form-group">
-                                    <input type="button" class=" btn btn-link" value="Clear"/>
-                                    <input type="submit" class=" btn btn-primary"/>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="comment-col-left col-md-2">
-                            <div class="comment-avatar-user comment-user-reply avatar" data-userid="<?= $user->getId() ?>"> </div>
-                        </div>
-                    </div>
+                    <?php endif ?>
                 </div>
             </div>
         </main>

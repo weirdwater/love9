@@ -38,20 +38,23 @@ class PeopleGrid
 
     public function showPeopleGrid()
     {
+        global $user;
         require TEMPLATES . 'people-grid.php';
     }
 
     private function retrievePeople($page)
     {
         $modifier = $page - 1;
+        $offset = $modifier * 9;
         try {
             global $db;
             $people = $db->prepare('
-                SELECT personId
-                FROM People
+                SELECT p.personId
+                FROM People p
+                ORDER BY p.name
                 LIMIT ?, 9
             ');
-            $people->bindParam(1, $modifier, \PDO::PARAM_INT);
+            $people->bindParam(1, $offset, \PDO::PARAM_INT);
             $people->execute();
             $people = $people->fetchAll(\PDO::FETCH_ASSOC);
 

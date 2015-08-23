@@ -104,7 +104,7 @@ class Person
                 WHERE personId = ?
                 AND favoritedPersonId = ?
             ');
-            $status->bindParam(1, $_SESSION['userId'], \PDO::PARAM_INT);
+            $status->bindParam(1, $_SESSION['userPersonId'], \PDO::PARAM_INT);
             $status->bindParam(2, $this->id, \PDO::PARAM_INT);
             $status->execute();
             $status = $status->fetch(\PDO::FETCH_ASSOC)['numberOf'];
@@ -126,9 +126,10 @@ class Person
         try {
             global $db;
             $interests = $db->prepare('
-                SELECT DISTINCT i.interestId, i.name, ir.likes
+                SELECT  *
                 FROM Interests i, Interests_has_People ir
-                WHERE ir.People_personId = ?
+                WHERE i.interestId = ir.Interests_interestId
+                AND ir.People_personId = ?
             ');
             $interests->bindParam(1, $this->id, \PDO::PARAM_INT);
             $interests->execute();
@@ -138,7 +139,7 @@ class Person
                 array_push($this->interests, new Interest(
                     $interest['interestId'],
                     $interest['name'],
-                    !!$interest['likes']
+                    $interest['likes']
                 ));
         }
         catch (\Exception $e) {
@@ -147,22 +148,23 @@ class Person
         }
     }
 
-    public function addToFavorites($person)
+    public function addToFavorites()
     {
         global $db;
+        global $user;
         global $exceptionHandler;
         try {
             $add = $db->prepare('
                 INSERT INTO Favorites (personId, favoritedPersonId)
                 VALUES (?, ?)
             ');
-            $add->bindParam(1, $this->id, \PDO::PARAM_INT);
-            $add->bindValue(2, $person->getId());
+            $add->bindValue(1, $user->getPerson()->getId());
+            $add->bindParam(2, $this->id, \PDO::PARAM_INT);
             $add->execute();
         }
         catch (\Exception $e) {
             if ($e->getCode() == 23000) {
-                $exceptionHandler->addAlert('warning', $person->getName() . ' already is in your favorites.');
+                $exceptionHandler->addAlert('warning', $this->getName() . ' already is in your favorites.');
             }
             else {
                 $exceptionHandler->databaseException($e, 'Favorites Add');
@@ -170,12 +172,13 @@ class Person
             return false;
         }
         $this->inUserFavorites = true;
-        $exceptionHandler->addAlert('success', $person->getName() . ' was added to your favorites.');
+        $exceptionHandler->addAlert('success', $this->getName() . ' was added to your favorites.');
     }
 
-    public function removeFromFavorites($person)
+    public function removeFromFavorites()
     {
         global $db;
+        global $user;
         global $exceptionHandler;
         try {
             $add = $db->prepare('
@@ -183,8 +186,8 @@ class Person
                     WHERE personId = ?
                     AND favoritedPersonId = ?
             ');
-            $add->bindParam(1, $this->id, \PDO::PARAM_INT);
-            $add->bindValue(2, $person->getId());
+            $add->bindValue(1, $user->getPerson()->getId());
+            $add->bindParam(2, $this->id, \PDO::PARAM_INT);
             $add->execute();
         }
         catch (\Exception $e) {
@@ -193,7 +196,7 @@ class Person
             return false;
         }
         $this->inUserFavorites = false;
-        $exceptionHandler->addAlert('success', $person->getName() . ' was removed from your favorites.');
+        $exceptionHandler->addAlert('success', $this->getName() . ' was removed from your favorites.');
     }
 
     public static function withId($id)
@@ -211,7 +214,7 @@ class Person
     public function dislikesInterest($interestId)
     {
         foreach ($this->interests as $interest) {
-            if ($interest->getId() == $interestId && !$interest->getLikes())
+            if ($interest->getId() == $interestId && $interest->getLikes() == 0)
                 return true;
         }
         return false;
@@ -220,7 +223,7 @@ class Person
     public function likesInterest($interestId)
     {
         foreach ($this->interests as $interest) {
-            if ($interest->getId() == $interestId && $interest->getLikes())
+            if ($interest->getId() == $interestId && $interest->getLikes() == 1)
                 return true;
         }
         return false;

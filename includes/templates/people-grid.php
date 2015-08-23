@@ -13,30 +13,40 @@
                     <div class="clearfix profile-picture-row">
                 <?php endif ?>
                     <div class="pull-left profile-picture-item avatar" data-userid="<?= $person->getId() ?>">
-                        <?php if($person->isInUserFavorites()): ?>
-                            <a href="<?= BASE_URL ?>?view=favorite&id=<?= $person->getId() ?>&action=delete" class="glyphicon glyphicon glyphicon-heart favorites-toggle" data-favorite="true" aria-hidden="true"></a>
+                        <?php if ($user->isLoggedIn()): ?>
+                            <?php if($person->isInUserFavorites()): ?>
+                                <a href="<?= BASE_URL ?>?view=favorite&id=<?= $person->getId() ?>&action=delete" class="glyphicon glyphicon glyphicon-heart favorites-toggle" data-favorite="true" aria-hidden="true"></a>
+                            <?php else: ?>
+                                <a href="<?= BASE_URL ?>?view=favorite&id=<?= $person->getId() ?>&action=add" class="glyphicon glyphicon glyphicon-heart-empty favorites-toggle" data-favorite="false" aria-hidden="true"></a>
+                            <?php endif ?>
                         <?php else: ?>
-                            <a href="<?= BASE_URL ?>?view=favorite&id=<?= $person->getId() ?>&action=add" class="glyphicon glyphicon glyphicon-heart-empty favorites-toggle" data-favorite="false" aria-hidden="true"></a>
+                            <a href="#" class="glyphicon glyphicon glyphicon-heart favorites-toggle invisible" data-favorite="true" aria-hidden="true"></a>
                         <?php endif ?>
                         <div class="profile-picture-overlay">
                             <a href="<?= BASE_URL . '?view=person&id=' . $person->getId() ?>"><?= $person->getFullName() ?></a>
                         </div>
                     </div>
                 <?php $count++; ?>
-                <?php if (!($count % 3) || $count >= 9): ?>
+                <?php if (!($count % 3) || $count >= count($this->people)): ?>
                     </div>
                 <?php endif; ?>
             <?php endforeach; ?>
             <nav>
                 <ul class="pagination">
                     <li <?php if ($this->page == 1): ?>class="disabled"<?php endif ?>>
-                        <a href="#" aria-label="Previous">
+                        <a href="<?= BASE_URL ?>?id=<?= $this->page - 1 ?>" aria-label="Previous">
                             <span aria-hidden="true">&laquo;</span>
                         </a>
                     </li>
-                    <li class="active"><a href="#">1</a></li>
+                    <?php for ( $i = 1; $i <= $this->pages; $i++): ?>
+                        <?php if ($i == $this->page): ?>
+                            <li class="active"><a href="<?= BASE_URL ?>?id=<?= $i ?>"><?= $i ?></a></li>
+                        <?php else: ?>
+                            <li><a href="<?= BASE_URL ?>?id=<?= $i ?>"><?= $i ?></a></li>
+                        <?php endif ?>
+                    <?php endfor ?>
                     <li <?php if ($this->page >= $this->pages): ?>class="disabled"<?php endif ?>>
-                        <a href="#" aria-label="Next">
+                        <a href="<?= BASE_URL ?>?id=<?= $this->page + 1 ?>" aria-label="Next">
                             <span aria-hidden="true">&raquo;</span>
                         </a>
                     </li>
