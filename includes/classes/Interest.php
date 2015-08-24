@@ -22,6 +22,59 @@ class Interest
         $this->likes = $likes;
     }
 
+    public static function fromName($name, $likes = true)
+    {
+        // TODO: Check with database for actual ID
+        // TODO: Else create new interest
+        $id = Interest::existsInDb($name);
+        if (!$id) {
+            $id = Interest::recordNew($name);
+            if (!$id) {
+                return false;
+            }
+        }
+        $instance = new Interest($id, $name, $likes);
+        return $instance;
+    }
+
+    public static function recordNew($name)
+    {
+        try {
+            global $db;
+            $interest = $db->prepare('
+                INSERT INTO Interests (name)
+                VALUES (?)
+            ');
+            $interest->bindParam(1, $name, \PDO::PARAM_STR);
+            $interest->execute();
+            return $db->lastInsertId();
+        } catch (\Exception $e) {
+            global $exceptionHandler;
+            $exceptionHandler->databaseException($e, 'New Interest');
+        }
+        return false;
+    }
+
+    public static function existsInDb($name)
+    {
+        try {
+            global $db;
+            $interest = $db->prepare('
+                SELECT *
+                FROM Interests
+                WHERE `name` = ?
+            ');
+            $interest->bindParam(1, $name, \PDO::PARAM_STR);
+            $interest->execute();
+            $interest = $interest->fetch(\PDO::FETCH_ASSOC);
+            return $interest['interestId'];
+        } catch (\Exception $e) {
+            global $exceptionHandler;
+            $exceptionHandler->databaseException($e, 'Interest Check');
+        }
+        return false;
+    }
+
     public function showDefaultInterest()
     {
         require TEMPLATES . 'interest.php';

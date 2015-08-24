@@ -49,7 +49,7 @@
                             </a>
                         </li>
                     <?php else: ?>
-                        <li><a href="<?= BASE_URL ?>?view=favorite&id=<?= $person->getId() ?>&action=add" class="menu-icons">
+                        <li><a href="<?= BASE_URL ?>?view=favorite&id=<?= $person->getId() ?>&action=create" class="menu-icons">
                                 <div class="menu-icons glyphicon glyphicon-heart"></div>
                             </a>
                         </li>
@@ -63,3 +63,5 @@
         </ul>
     </nav>
 </header>
+<div class="container" ?>
+<?php $exceptionHandler->showAlerts(); ?>

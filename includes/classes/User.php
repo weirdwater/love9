@@ -35,7 +35,8 @@ class User
     public static function withLogin()
     {
         $email = filter_input(INPUT_POST, 'login-email', FILTER_SANITIZE_EMAIL);
-        $password = filter_input(INPUT_POST, 'login-password', FILTER_SANITIZE_STRING);
+        $password = filter_input(INPUT_POST, 'login-password',
+            FILTER_SANITIZE_STRING);
 
         if (!empty($email)
             && !empty($password)
@@ -83,6 +84,37 @@ class User
             global $exceptionHandler;
             $exceptionHandler->databaseException($e, 'Password Check');
         }
+    }
+
+    public function recordNew($values)
+    {
+        $email = $values['signup-email'];
+        $password = $values['signup-password'];
+        $password = password_hash($password, PASSWORD_DEFAULT);
+
+        try {
+            global $db;
+            $insert = $db->prepare('
+                INSERT INTO Users (email, `password`)
+                VALUES (?, ?)
+            ');
+            $insert->bindParam(1, $email, \PDO::PARAM_STR);
+            $insert->bindParam(2, $password, \PDO::PARAM_STR);
+            $insert->execute();
+
+            $this->userId = $db->lastInsertId();
+            $_SESSION['userId'] = $this->userId;
+            if ($this->userId)
+                return true;
+            else
+                return false;
+        }
+        catch (\Exception $e) {
+            global $exceptionHandler;
+            $exceptionHandler->databaseException($e, 'User::recordNew');
+            return false;
+        }
+
     }
 
     private function setLoggedIn()
@@ -137,16 +169,39 @@ class User
         }
         catch (\Exception $e) {
             global $exceptionHandler;
-            $exceptionHandler->databaseException($e, 'User');
+            $exceptionHandler->databaseException($e, 'User::retrieveWithEmail');
+        }
+    }
+
+    public function pairPerson($person) {
+        $this->person = $person;
+
+        try {
+            global $db;
+            $update = $db->prepare('
+                UPDATE Users
+                SET People_personId=?
+                WHERE userId = ?
+            ');
+            $update->bindValue(1, $this->person->getId(), \PDO::PARAM_INT);
+            $update->bindParam(2, $this->userId, \PDO::PARAM_INT);
+            $update->execute();
+        }
+        catch (\Exception $e) {
+            global $exceptionHandler;
+            $exceptionHandler->databaseException($e, 'User::pairPerson');
         }
     }
 
     private function fillProperties($info)
     {
         $this->userId   = $info['userId'];
-        $this->person   = Person::withId($info['People_personId']);
         $this->verified = $info['verified'];
-        $this->email    = $info['verified'];
+        $this->email    = $info['email'];
+        if ($info['People_personId'])
+            $this->person = Person::withId($info['People_personId']);
+        else
+            $this->person = new Person();
     }
 
     public function logout()
@@ -169,5 +224,10 @@ class User
     public function isLoggedIn()
     {
         return $this->loggedIn;
+    }
+
+    public function hasPerson()
+    {
+        return !!$this->person->getId();
     }
 }

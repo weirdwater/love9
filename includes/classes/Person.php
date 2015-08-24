@@ -27,9 +27,9 @@ class Person
     public  $location;
 
     public function __construct($name = null, $surname = null, $dob = null,
-                                $height = null, $sex = null, $preferredSex = null,
-                                $location = null, $bio = null, $avatar = null,
-                                $id = null)
+                                $height = null, $sex = null,
+                                $preferredSex = null, $location = null,
+                                $bio = null, $avatar = null, $id = null)
     {
         $this->name = $name;
         $this->surname = $surname;
@@ -164,7 +164,8 @@ class Person
         }
         catch (\Exception $e) {
             if ($e->getCode() == 23000) {
-                $exceptionHandler->addAlert('warning', $this->getName() . ' already is in your favorites.');
+                $exceptionHandler->addAlert('warning', $this->getName()
+                    . ' already is in your favorites.');
             }
             else {
                 $exceptionHandler->databaseException($e, 'Favorites Add');
@@ -172,7 +173,8 @@ class Person
             return false;
         }
         $this->inUserFavorites = true;
-        $exceptionHandler->addAlert('success', $this->getName() . ' was added to your favorites.');
+        $exceptionHandler->addAlert('success', $this->getName()
+            . ' was added to your favorites.');
     }
 
     public function removeFromFavorites()
@@ -196,7 +198,8 @@ class Person
             return false;
         }
         $this->inUserFavorites = false;
-        $exceptionHandler->addAlert('success', $this->getName() . ' was removed from your favorites.');
+        $exceptionHandler->addAlert('success', $this->getName()
+            . ' was removed from your favorites.');
     }
 
     public static function withId($id)
@@ -211,10 +214,107 @@ class Person
         }
     }
 
+    public static function recordNew($values)
+    {
+        $newPerson = new Person(
+            $values['name'],
+            $values['surname'],
+            $values['dob'],
+            $values['height'],
+            $values['sex'],
+            $values['prefSex'],
+            new Location($values['city'], null, null, $values['state']),
+            $values['bio']
+        );
+        $newPerson->setHairColor($values['hairColor']);
+        $newPerson->seteyeColor($values['eyeColor']);
+        $newPerson->addInterestsFromString($values['interests'], true);
+        $newPerson->addInterestsFromString($values['dislikes'], false);
+        if (!$newPerson->recordNewToDB())
+            return false;
+        else {
+            $newPerson->saveInterests();
+            return $newPerson;
+        }
+    }
+
+    public function recordNewToDB()
+    {
+        global $db;
+        global $exceptionHandler;
+        try {
+
+            $insert = $db->prepare('
+                INSERT INTO People (`name`, surname, dob, sex, preferredSex, bio, city, stateId, eyeColorId, hairColorId, height)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ');
+            $insert->bindParam(1, $this->name, \PDO::PARAM_STR);
+            $insert->bindParam(2, $this->surname, \PDO::PARAM_STR);
+            $insert->bindParam(3, $this->dob, \PDO::PARAM_STR);
+            $insert->bindParam(4, $this->sex, \PDO::PARAM_STR);
+            $insert->bindParam(5, $this->preferredSex, \PDO::PARAM_STR);
+            $insert->bindParam(6, $this->bio, \PDO::PARAM_STR);
+            $insert->bindValue(7, $this->location->getCity(), \PDO::PARAM_STR);
+            $insert->bindValue(8, $this->location->getId(), \PDO::PARAM_INT);
+            $insert->bindParam(9, $this->eyeColor, \PDO::PARAM_INT);
+            $insert->bindParam(10, $this->hairColor, \PDO::PARAM_INT);
+            $insert->bindParam(11, $this->height, \PDO::PARAM_INT);
+            $insert->execute();
+            $this->id = $db->lastInsertId();
+            if (!$this->id) {
+                $exceptionHandler->addAlert('danger', 'Unsuccessful insert.');
+                return false;
+            }
+            else
+                return true;
+        }
+        catch (\Exception $e) {
+            $exceptionHandler->databaseException($e, 'Favorites Add');
+            return false;
+        }
+    }
+
+    public function saveInterests() {
+        global $db;
+        try {
+            // Delete all interests of the user
+            $clear = $db->prepare('
+                DELETE FROM Interests_has_People
+                WHERE People_personId = ?
+            ');
+            $clear->bindParam(1, $this->id, \PDO::PARAM_INT);
+            $clear->execute();
+
+            // Add current interests
+            $insert = $db->prepare('
+                INSERT INTO Interests_has_People (Interests_interestId, People_personId, likes)
+                VALUES (?, ?, ?)
+            ');
+            foreach ($this->interests as $interest) {
+                $params = [$interest->getId(), $this->id, $interest->getLikes()];
+                $insert->execute($params);
+            }
+        }
+        catch (\Exception $e) {
+            global $exceptionHandler;
+            $exceptionHandler->databaseException($e, 'Favorites Add');
+            return false;
+        }
+    }
+
+    private function addInterestsFromString($string, $likes)
+    {
+        $interests = explode(', ', $string);
+        foreach ($interests as $interest) {
+            array_push($this->interests, Interest::fromName($interest, $likes));
+        }
+    }
+
     public function dislikesInterest($interestId)
     {
         foreach ($this->interests as $interest) {
-            if ($interest->getId() == $interestId && $interest->getLikes() == 0)
+            if ($interest->getId() == $interestId
+                && $interest->getLikes() == 0)
                 return true;
         }
         return false;
@@ -223,7 +323,8 @@ class Person
     public function likesInterest($interestId)
     {
         foreach ($this->interests as $interest) {
-            if ($interest->getId() == $interestId && $interest->getLikes() == 1)
+            if ($interest->getId() == $interestId
+                && $interest->getLikes() == 1)
                 return true;
         }
         return false;
@@ -375,5 +476,21 @@ class Person
     public function isInUserFavorites()
     {
         return $this->inUserFavorites;
+    }
+
+    /**
+     * @param mixed $eyeColor
+     */
+    public function setEyeColor($eyeColor)
+    {
+        $this->eyeColor = $eyeColor;
+    }
+
+    /**
+     * @param mixed $hairColor
+     */
+    public function setHairColor($hairColor)
+    {
+        $this->hairColor = $hairColor;
     }
 }

@@ -24,12 +24,12 @@ setlocale(LC_TIME, 'nl_NL');
  * less painful.
  * To control the error messages we tell PHP to throw exceptions instead.
  */
-error_reporting(E_ALL);
+error_reporting(E_ALL | E_NOTICE | E_ERROR);
 ini_set('display_errors', 1);
-set_error_handler(function ($errno, $errstr, $errfile, $errline)
-{
-    throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
-});
+//set_error_handler(function ($errno, $errstr, $errfile, $errline)
+//{
+//    throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
+//});
 $inDevelopment = true;
 
 /*

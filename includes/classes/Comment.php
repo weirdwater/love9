@@ -30,7 +30,8 @@ class Comment
     {
         global $user;
 
-        if ($user->isLoggedIn() && $this->from->getId() == $user->getPerson()->getId()) {
+        if ($user->isLoggedIn()
+            && $this->from->getId() == $user->getPerson()->getId()) {
             require TEMPLATES . 'comment-user.php';
         }
         else {
