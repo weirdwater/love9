@@ -71,18 +71,18 @@ CREATE TABLE IF NOT EXISTS `" . DB_NAME . "`.`People` (
   CONSTRAINT `fk_People_States`
     FOREIGN KEY (`stateId`)
     REFERENCES `" . DB_NAME . "`.`States` (`stateId`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_People_EyeColors1`
     FOREIGN KEY (`eyeColorId`)
     REFERENCES `" . DB_NAME . "`.`EyeColors` (`eyeColorId`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_People_HairColors1`
     FOREIGN KEY (`hairColorId`)
     REFERENCES `" . DB_NAME . "`.`HairColors` (`hairColorId`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 
@@ -103,8 +103,8 @@ CREATE TABLE IF NOT EXISTS `" . DB_NAME . "`.`Users` (
   CONSTRAINT `fk_Users_People1`
     FOREIGN KEY (`People_personId`)
     REFERENCES `" . DB_NAME . "`.`People` (`personId`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 
@@ -124,13 +124,13 @@ CREATE TABLE IF NOT EXISTS `" . DB_NAME . "`.`Comments` (
   CONSTRAINT `fk_Comments_People1`
     FOREIGN KEY (`fromPersonId`)
     REFERENCES `" . DB_NAME . "`.`People` (`personId`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_Comments_People2`
     FOREIGN KEY (`toPersonId`)
     REFERENCES `" . DB_NAME . "`.`People` (`personId`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 
@@ -157,13 +157,13 @@ CREATE TABLE IF NOT EXISTS `" . DB_NAME . "`.`Interests_has_People` (
   CONSTRAINT `fk_Interests_has_People_Interests1`
     FOREIGN KEY (`Interests_interestId`)
     REFERENCES `" . DB_NAME . "`.`Interests` (`interestId`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_Interests_has_People_People1`
     FOREIGN KEY (`People_personId`)
     REFERENCES `" . DB_NAME . "`.`People` (`personId`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 
@@ -179,13 +179,13 @@ CREATE TABLE IF NOT EXISTS `" . DB_NAME . "`.`Favorites` (
   CONSTRAINT `fk_People_has_People_People1`
     FOREIGN KEY (`personId`)
     REFERENCES `" . DB_NAME . "`.`People` (`personId`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_People_has_People_People2`
     FOREIGN KEY (`favoritedPersonId`)
     REFERENCES `" . DB_NAME . "`.`People` (`personId`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 
@@ -202,13 +202,13 @@ CREATE TABLE IF NOT EXISTS `" . DB_NAME . "`.`Ratings` (
   CONSTRAINT `fk_People_has_People_People3`
     FOREIGN KEY (`personId`)
     REFERENCES `" . DB_NAME . "`.`People` (`personId`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_People_has_People_People4`
     FOREIGN KEY (`raterId`)
     REFERENCES `" . DB_NAME . "`.`People` (`personId`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 
@@ -225,13 +225,13 @@ CREATE TABLE IF NOT EXISTS `" . DB_NAME . "`.`Ratings` (
   CONSTRAINT `fk_People_has_People_People3`
     FOREIGN KEY (`personId`)
     REFERENCES `" . DB_NAME . "`.`People` (`personId`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_People_has_People_People4`
     FOREIGN KEY (`raterId`)
     REFERENCES `" . DB_NAME . "`.`People` (`personId`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 

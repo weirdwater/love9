@@ -24,7 +24,7 @@
                     <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1">
                         <li><a href="<?= BASE_URL ?>?view=person&id=<?= $user->getPerson()->getId() ?>"><span class="glyphicon glyphicon-user"></span>  Profile</a></li>
                         <li><a href="#"><span class="glyphicon glyphicon-heart"></span>  Favorites</a></li>
-                        <li><a href="#"><span class="glyphicon glyphicon-cog"></span>  Settings</a></li>
+                        <li><a href="<?= BASE_URL ?>?view=profile&id=<?= $user->getPerson()->getId() ?>&action=delete"><span class="glyphicon glyphicon-remove-sign"></span>  Delete Profile</a></li>
                         <li role="separator" class="divider"></li>
                         <li><a href="<?= BASE_URL ?>?view=logout"><span class="glyphicon glyphicon-log-out"></span>  Sign Out</a></li>
                     </ul>

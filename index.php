@@ -69,6 +69,21 @@ elseif ($view == 'favorite' && !empty($id) && $action == 'delete') {
     $showProfile = true;
 }
 
+// Remove a comment
+elseif ($view == 'comment' && !empty($id) && $action == 'delete') {
+    $comment = \love9\Comment::withId($id);
+    $comment->delete();
+    $person = $comment->getTo();
+    $showProfile = true;
+}
+
+// Remove a profile
+// Remove a comment
+elseif ($view == 'profile' && !empty($id) && $action == 'delete') {
+    $person = love9\Person::withId($id);
+    $person->deleteUser();
+}
+
 // Display the browsing view
 else {
     if (empty($id))

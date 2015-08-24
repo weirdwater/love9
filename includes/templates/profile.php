@@ -10,7 +10,7 @@
                 <div class="col-md-8">
                     <h1><?= $this->person->getFullName() ?></h1>
                     <ul>
-                        <li>Sex: <?= $this->person->getSex() ?></li>
+                        <li><span class="sex" data-sex="<?= $this->person->getSex() ?>"><?= strtoupper($this->person->getSex()) ?> Looking for </span><span data-sex="<?= $this->person->getPreferredSex() ?>"><?= strtoupper($this->person->getPreferredSex()) ?></span></li>
                         <li>Age: <?= $this->person->getAge() ?></li>
                         <li>Height: <?= $this->person->getHeightInCm() ?></li>
                         <li>Eye Color: <?= $this->person->getEyeColor() ?></li>
@@ -48,12 +48,14 @@
                             <h3>Interests</h3>
                             <div class="interests">
                                 <?php foreach ($this->person->getInterests() as $interest): ?>
-                                    <?php if ($user->isLoggedIn() && $user->getPerson()->dislikesInterest($interest->getId())): ?>
-                                        <span class="label label-success"><?= $interest->getName() ?></span>
-                                    <?php elseif ($user->isLoggedIn() && $user->getPerson()->likesInterest($interest->getId())): ?>
-                                        <span class="label label-success"><?= $interest->getName() ?></span>
-                                    <?php else: ?>
-                                        <span class="label label-default"><?= $interest->getName() ?></span>
+                                    <?php if ($interest->getLikes()): ?>
+                                        <?php if ($user->isLoggedIn() && $user->getPerson()->dislikesInterest($interest->getId())): ?>
+                                            <span class="label label-success"><?= $interest->getName() ?></span>
+                                        <?php elseif ($user->isLoggedIn() && $user->getPerson()->likesInterest($interest->getId())): ?>
+                                            <span class="label label-success"><?= $interest->getName() ?></span>
+                                        <?php else: ?>
+                                            <span class="label label-default"><?= $interest->getName() ?></span>
+                                        <?php endif ?>
                                     <?php endif ?>
                                 <?php endforeach ?>
                             </div>
@@ -75,13 +77,12 @@
                         <div class="comment-col-left col-md-2">
                         </div>
                         <div class="comment-col-middle col-md-8">
-                            <form action="" method="post">
+                            <form action="<?= BASE_URL ?>?view=person&id=<?= $this->person->getId() ?>" method="post">
                                 <div class="form-group">
                                     <label for="comment">Reply:</label>
-                                    <textarea class="form-control" rows="5" id="comment"></textarea>
+                                    <textarea class="form-control" rows="5" id="comment-body" name="comment-body"></textarea>
                                 </div>
                                 <div class="form-group">
-                                    <input type="button" class=" btn btn-link" value="Clear"/>
                                     <input type="submit" class=" btn btn-primary"/>
                                 </div>
                             </form>

@@ -177,6 +177,35 @@ class Person
             . ' was added to your favorites.');
     }
 
+    public function deleteUser()
+    {
+        global $db,
+               $user,
+               $exceptionHandler;
+        try {
+
+            $sql = [
+                // Remove personIDfrom user
+                'UPDATE users SET People_personId=NULL WHERE People_personId = :personId',
+                // Delete interests
+                'DELETE FROM People WHERE personId = :personId'
+
+            ];
+            foreach ($sql as $sqlStatement) {
+                $statement = $db->prepare($sqlStatement);
+                $statement->bindParam(':personId', $this->id, \PDO::PARAM_INT);
+                $statement->execute();
+                $statement->closeCursor();
+            }
+            $exceptionHandler->addAlert('info', 'Profile deleted.');
+
+        }
+        catch (\Exception $e) {
+            $exceptionHandler->databaseException($e, 'Person Delete');
+            return false;
+        }
+    }
+
     public function removeFromFavorites()
     {
         global $db;

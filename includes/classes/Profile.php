@@ -18,6 +18,7 @@ class Profile
     public function __construct($person)
     {
         $this->person = $person;
+        $this->newCommentHandler();
         $this->retrieveComments();
         $this->retrieveRatings();
     }
@@ -59,6 +60,30 @@ class Profile
         catch (\Exception $e) {
             global $exceptionHandler;
             $exceptionHandler->databaseException($e);
+        }
+    }
+
+    private function newCommentHandler() {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST'
+            && isset($_POST['comment-body'])
+            && !empty($_POST['comment-body'])) {
+            $body = filter_input(INPUT_POST, 'comment-body', FILTER_SANITIZE_STRING);
+            try {
+                global $db;
+                global $user;
+                $insert = $db->prepare('
+                     INSERT INTO Comments (body, fromPersonId, toPersonId)
+                     VALUES (?, ?, ?)
+                ');
+                $insert->bindParam(1, $body, \PDO::PARAM_STR);
+                $insert->bindValue(2, $user->getPerson()->getId(), \PDO::PARAM_STR);
+                $insert->bindValue(3, $this->person->getId(), \PDO::PARAM_STR);
+                $insert->execute();
+            }
+            catch (\Exception $e) {
+                global $exceptionHandler;
+                $exceptionHandler->databaseException($e, 'Interests');
+            }
         }
     }
 

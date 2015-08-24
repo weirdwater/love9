@@ -159,6 +159,40 @@ a.favorites-toggle {
 Profile
 */
 
+.sex,
+.sex+span {
+    display: inline-block;
+    border-radius: 2em;
+    padding: .25em;
+}
+
+.sex {
+    padding-left: .5em;
+    padding-right: 1.5em;
+    border-radius: 1em 0 0 1em;
+    -moz-border-radius-bottomright: 0;
+    -moz-border-radius-topright: 0;
+}
+
+.sex+span {
+    padding-right: .65em;
+    padding-left: .65em;
+    margin-left: -1em;
+    border-radius: 1em;
+    -moz-border-radius-bottomleft: 0;
+    -moz-border-radius-topleft: 0;
+}
+
+.sex[data-sex="f"],
+.sex+[data-sex="f"] {
+    background-color: #e87cff;
+}
+
+.sex[data-sex="m"],
+.sex+[data-sex="m"] {
+    background-color: #5bc0de;
+}
+
 .profile-picture {
     border-radius: 200px;
     overflow: hidden;
@@ -289,7 +323,7 @@ Comments
     background: #fff;
 }
 
-.comment-header > h4 {
+.comment-header h4 {
     margin: 0;
     color: #4a4a4a;
 }

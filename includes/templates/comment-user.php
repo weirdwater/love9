@@ -5,7 +5,15 @@
     </div>
     <div class="comment-col-middle col-md-8">
         <div class="comment-header">
-            <h4><?= $this->from->getFullName() ?></h4>
+            <div class="row">
+                <div class="col-sm-11">
+                    <h4><?= $this->from->getFullName() ?></h4>
+                </div>
+                <div class="col-sm-1 hidden">
+                    <div class="glyphicon glyphicon-remove">
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="comment-body">
             <?= $this->body ?>
