@@ -40,7 +40,7 @@ $inDevelopment = true;
  * Example solution:  $pathToIndex = '/datingsite/';
  * Do not forget to end the $pathToIndex with a '/'!
  */
-$pathToIndex = '/love9/';
+$pathToIndex = '/';
 define('ROOT_PATH', $_SERVER['DOCUMENT_ROOT'] . $pathToIndex);
 define('BASE_URL', $pathToIndex);
 
